@@ -1,0 +1,49 @@
+{
+    "interactionModel":{
+        "languageModel":{
+            "invocationName":"airport info",
+            "intents":[
+                {
+                  "name": "AMAZON.CancelIntent",
+                  "samples": []
+                },
+                {
+                  "name": "AMAZON.HelpIntent",
+                  "samples": []
+                },
+                {
+                  "name": "AMAZON.StopIntent",
+                  "samples": []
+                },
+                {
+                  "name":"GetNewLessonIntent",
+                  "samples": [
+                    "a lesson",
+                    "a life lesson",
+                    "tell me a life lesson",
+                    "tell me a lesson",
+                    "give me a lesson",
+                    "give me today's life lesson",
+                    "what is today's lesson",
+                    "what is today's life lesson"
+                  ],
+                  "slots": []
+                },
+                {
+                    "name":"MyNameIsIntent",
+                    "slots":[
+                        {
+                            "name":"name",
+                            "type":"AMAZON.US_FIRST_NAME"
+                        }
+                    ],
+                    "samples":[
+                        "my name is {name}",
+                        "i am {name}",
+                        "you can call me {name}"
+                    ]
+                }
+                ]
+              }
+            }
+          }
