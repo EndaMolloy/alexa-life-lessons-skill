@@ -45,12 +45,16 @@
                 {
                   "name":"RepeatLessonIntent",
                   "samples": [
+                    "repeat today's lesson",
+                    "repeat today's story",
                     "tell me that story again",
                     "tell me that lesson again",
                     "give me that again",
                     "say that again",
                     "repeat that",
-                    "play again"
+                    "play again",
+                    "repeat it",
+                    "repeat"
                   ],
                   "slots": []
                 },
