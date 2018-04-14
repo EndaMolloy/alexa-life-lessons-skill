@@ -37,8 +37,10 @@
                     "remember this",
                     "add that story to favorites",
                     "add to favorites",
+                    "add to my favorites",
                     "add that",
-                    "save to favorites"
+                    "save to favorites",
+                    "save to my favorites"
                   ],
                   "slots": []
                 },
@@ -55,6 +57,16 @@
                     "play again",
                     "repeat it",
                     "repeat"
+                  ],
+                  "slots": []
+                },
+                {
+                  "name":"ListFavoritesIntent",
+                  "samples": [
+                    "list my favorites",
+                    "tell me my favorites",
+                    "open favorites",
+                    "my favorites"
                   ],
                   "slots": []
                 },

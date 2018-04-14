@@ -40,7 +40,6 @@ const handlers = {
 
         todaysLessonTitle = response.data.feed.entry[1].title.$t;
         todaysLessonContent = response.data.feed.entry[1].content.$t;
-        // var speechOutput = todaysLessonTitle + "  " + todaysLessonContent;
 
         this.response.speak(`Today\'s lesson is called <p>${todaysLessonTitle}</p><p>${todaysLessonContent}</p>`).shouldEndSession(false);
         this.emit(':responseReady');
@@ -49,9 +48,6 @@ const handlers = {
       .catch(error => {
         console.log(error);
       })
-      // todaysLesson = 'hello mate';
-      // this.response.speak(todaysLesson).shouldEndSession(false);
-      // this.emit(':responseReady');
     },
     'AddFavoriteLessonIntent': function(){
       const params = {
@@ -62,32 +58,15 @@ const handlers = {
        }
       };
 
-      const checkIfLesson = {
+      const checkIfSaved = {
         TableName: favoriteLessonsTable,
         Key: {
           'Title': todaysLessonTitle
         }
-      }
+      };
 
-      // dbPut(params).then(data => {
-      //   console.log("PutItem succeeded: The Wolf Hahaha");
-      //   this.emit(':tell', 'The wolf and his shadow has been added to your favorites');
-      // })
-      // .catch(err => {
-      //   console.log(err);
-      // })
-      //  console.log('Attempting to add recipe', params);
-      //
-      // docClient.put(params).promise()
-      // .then(data => {
-      //     console.log("data added successfully", data);
-      //     this.emit(':tell', `${todaysLessonTitle} has been added to your favorites`);
-      // })
-      // .catch(err => {
-      //     console.log(err);
-      // });
-
-     docClient.get(checkIfLesson).promise()
+     //check to see if the lesson has already been saved to favorites
+     docClient.get(checkIfSaved).promise()
        .then(data => {
          console.log("GetItem succeeded:", JSON.stringify(data, null, 2));
 
@@ -109,21 +88,33 @@ const handlers = {
        .catch(err => {
          console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
        })
-
-      //  .then(data =>{
-      //    console.log("data added successfully", data);
-      //    this.emit(':tell', 'The wolf and his shadow has been added to your favorites')
-      //  })
-      //  .catch(err => {
-      //    console.log(err);
-      //  })
     },
+
     'RepeatLessonIntent': function(){
       this.response.speak(`<p>${todaysLessonTitle}</p><p>${todaysLessonContent}</p>`);
       this.emit(':responseReady');
     },
+
     'ListFavoritesIntent': function(){
-      
+      let list = '<p>Your saved lessons are:</p>';
+      const params = {
+        TableName: favoriteLessonsTable
+      };
+
+      docClient.scan(params).promise()
+      .then(data => {
+          console.log("scan succeeded");
+          data.Items.forEach(lesson => {
+            console.log(lesson.Title);
+            list += `<p>${lesson.Title}</p>`;
+          })
+
+          this.response.speak(list);
+          this.emit(':responseReady');
+      })
+      .catch(err => {
+        console.error("Unable to scan the table. Error JSON:", JSON.stringify(err, null, 2));
+      })
     },
     'MyNameIsIntent': function () {
         this.emit('SayHelloName');
