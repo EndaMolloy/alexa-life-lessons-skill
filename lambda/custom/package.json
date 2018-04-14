@@ -1,5 +1,5 @@
 {
-  "name": "sample airport info",
+  "name": "life-lessons",
   "version": "1.0.0",
   "description": "Airport info skill",
   "scripts": {
@@ -7,6 +7,8 @@
   },
   "dependencies": {
     "alexa-sdk": "^1.0.0",
-    "axios": "^0.18.0"
+    "aws-sdk": "^2.218.1",
+    "axios": "^0.18.0",
+    "es6-promisify": "^6.0.0"
   }
 }

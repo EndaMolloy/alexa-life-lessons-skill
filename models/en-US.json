@@ -30,6 +30,31 @@
                   "slots": []
                 },
                 {
+                  "name":"AddFavoriteLessonIntent",
+                  "samples": [
+                    "save that",
+                    "remember that",
+                    "remember this",
+                    "add that story to favorites",
+                    "add to favorites",
+                    "add that",
+                    "save to favorites"
+                  ],
+                  "slots": []
+                },
+                {
+                  "name":"RepeatLessonIntent",
+                  "samples": [
+                    "tell me that story again",
+                    "tell me that lesson again",
+                    "give me that again",
+                    "say that again",
+                    "repeat that",
+                    "play again"
+                  ],
+                  "slots": []
+                },
+                {
                     "name":"MyNameIsIntent",
                     "slots":[
                         {
