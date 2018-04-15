@@ -71,19 +71,51 @@
                   "slots": []
                 },
                 {
-                    "name":"MyNameIsIntent",
+                    "name":"GetFavoritedLessonIntent",
                     "slots":[
                         {
-                            "name":"name",
-                            "type":"AMAZON.US_FIRST_NAME"
+                            "name":"LESSON_TITLE",
+                            "type":"LESSONS"
                         }
                     ],
                     "samples":[
-                        "my name is {name}",
-                        "i am {name}",
-                        "you can call me {name}"
+                        "play {LESSON_TITLE}",
+                        "give me {LESSON_TITLE}",
+                        "tell me the story about {LESSON_TITLE}"
+                    ]
+                },
+                {
+                    "name":"DeleteFavoritedLessonIntent",
+                    "slots":[
+                        {
+                            "name":"LESSON_TITLE",
+                            "type":"LESSONS"
+                        }
+                    ],
+                    "samples":[
+                        "delete {LESSON_TITLE}",
+                        "delete {LESSON_TITLE} from favorites",
+                        "remove {LESSON_TITLE}",
+                        "remove {LESSON_TITLE} from favorites"
                     ]
                 }
+              ],
+              "types": [
+                  {
+                    "name": "LESSONS",
+                    "values": [
+                      {
+                        "name": {
+                          "value": "The lion and the ass"
+                        }
+                      },
+                      {
+                        "name": {
+                          "value": "The wolf and his shadow"
+                        }
+                      }
+                    ]
+                  }
                 ]
               }
             }

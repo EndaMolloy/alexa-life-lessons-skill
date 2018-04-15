@@ -53,15 +53,15 @@ const handlers = {
       const params = {
        TableName: favoriteLessonsTable,
        Item: {
-         "Title": todaysLessonTitle,
-         "lessonText": todaysLessonContent
+         "Title": todaysLessonTitle.toLowerCase(),
+         "lessonText": todaysLessonContent.toLowerCase()
        }
       };
 
       const checkIfSaved = {
         TableName: favoriteLessonsTable,
         Key: {
-          'Title': todaysLessonTitle
+          'Title': todaysLessonTitle.toLowerCase()
         }
       };
 
@@ -96,7 +96,7 @@ const handlers = {
     },
 
     'ListFavoritesIntent': function(){
-      let list = '<p>Your saved lessons are:</p>';
+      let list = '<p>Your favorited lessons are:</p>';
       const params = {
         TableName: favoriteLessonsTable
       };
@@ -109,27 +109,82 @@ const handlers = {
             list += `<p>${lesson.Title}</p>`;
           })
 
-          this.response.speak(list);
+          if(data.Items){
+            this.response.speak(list);
+          }
+          else{
+            this.response.speak('Looks liked you haven\'t any saved favorites yet');
+          }
           this.emit(':responseReady');
       })
       .catch(err => {
         console.error("Unable to scan the table. Error JSON:", JSON.stringify(err, null, 2));
       })
     },
-    'MyNameIsIntent': function () {
-        this.emit('SayHelloName');
+
+    'GetFavoritedLessonIntent': function(){
+
+        //the lesson to retrieve
+        const lessonSlot = this.event.request.intent.slots.LESSON_TITLE.value;
+        console.log(lessonSlot);
+
+        const params = {
+          TableName: favoriteLessonsTable,
+          Key: {
+            'Title': lessonSlot
+          }
+        }
+
+        console.log('Attempting to find lesson');
+
+         docClient.get(params).promise()
+         .then(data => {
+           console.log('Lesson found');
+           console.log("GetItem succeeded:", JSON.stringify(data, null, 2));
+           console.log(`${data.Item.Title}`);
+
+           this.response.speak(`<p>${data.Item.Title}</p><p>${data.Item.lessonText}</p>`);
+           this.emit(':responseReady');
+         })
+         .catch(err => {
+           console.error("Unable to get the lesson. Error JSON:", JSON.stringify(err, null, 2));
+         })
+
     },
-    'SayHelloName': function () {
-        var name = this.event.request.intent.slots.name.value;
-        this.response.speak('Hello ' + name)
-            .cardRenderer('hello world', 'hello ' + name);
-        this.emit(':responseReady');
+
+    'DeleteFavoritedLessonIntent': function(){
+
+        //the lesson to delete
+        const lessonSlot = this.event.request.intent.slots.LESSON_TITLE.value;
+        console.log(lessonSlot);
+
+        const params = {
+          TableName: favoriteLessonsTable,
+          Key: {
+            'Title': lessonSlot
+          },
+          ReturnValues: 'ALL_OLD'
+        }
+
+        console.log('Attempting to delete the lesson');
+
+         docClient.delete(params).promise()
+         .then(data => {
+            console.log("DeleteItem succeeded:", JSON.stringify(data, null, 2));
+
+           this.response.speak(`<p>${data.Attributes.Title}</p> has been deleted`);
+           this.emit(':responseReady');
+         })
+         .catch(err => {
+           console.error("Unable to get the lesson. Error JSON:", JSON.stringify(err, null, 2));
+         })
+
     },
     'SessionEndedRequest' : function() {
         console.log('Session ended with reason: ' + this.event.request.reason);
     },
     'AMAZON.StopIntent' : function() {
-        this.response.speak('Bye');
+        this.response.speak('Bye bye');
         this.emit(':responseReady');
     },
     'AMAZON.HelpIntent' : function() {
