@@ -50,18 +50,22 @@ const handlers = {
       })
     },
     'AddFavoriteLessonIntent': function(){
+
+      const { userId } = this.event.session.user;
       const params = {
        TableName: favoriteLessonsTable,
        Item: {
-         "Title": todaysLessonTitle.toLowerCase(),
-         "lessonText": todaysLessonContent.toLowerCase()
+         "lessonTitle": todaysLessonTitle.toLowerCase(),
+         "lessonText": todaysLessonContent.toLowerCase(),
+         'UserId': userId
        }
       };
 
       const checkIfSaved = {
         TableName: favoriteLessonsTable,
         Key: {
-          'Title': todaysLessonTitle.toLowerCase()
+          'lessonTitle': todaysLessonTitle.toLowerCase(),
+          'UserId': userId
         }
       };
 
@@ -105,8 +109,8 @@ const handlers = {
       .then(data => {
           console.log("scan succeeded");
           data.Items.forEach(lesson => {
-            console.log(lesson.Title);
-            list += `<p>${lesson.Title}</p>`;
+            console.log(lesson.lessonTitle);
+            list += `<p>${lesson.lessonTitle}</p>`;
           })
 
           if(data.Items){
@@ -131,7 +135,8 @@ const handlers = {
         const params = {
           TableName: favoriteLessonsTable,
           Key: {
-            'Title': lessonSlot
+            'lessonTitle': lessonSlot,
+            'UserId': userId
           }
         }
 
@@ -141,9 +146,9 @@ const handlers = {
          .then(data => {
            console.log('Lesson found');
            console.log("GetItem succeeded:", JSON.stringify(data, null, 2));
-           console.log(`${data.Item.Title}`);
+           console.log(`${data.Item.lessonTitle}`);
 
-           this.response.speak(`<p>${data.Item.Title}</p><p>${data.Item.lessonText}</p>`);
+           this.response.speak(`<p>${data.Item.lessonTitle}</p><p>${data.Item.lessonText}</p>`);
            this.emit(':responseReady');
          })
          .catch(err => {
@@ -161,7 +166,8 @@ const handlers = {
         const params = {
           TableName: favoriteLessonsTable,
           Key: {
-            'Title': lessonSlot
+            'lessonTitle': lessonSlot,
+            'UserId': userId
           },
           ReturnValues: 'ALL_OLD'
         }
@@ -172,7 +178,7 @@ const handlers = {
          .then(data => {
             console.log("DeleteItem succeeded:", JSON.stringify(data, null, 2));
 
-           this.response.speak(`<p>${data.Attributes.Title}</p> has been deleted`);
+           this.response.speak(`<p>${data.Attributes.lessonTitle}</p> has been deleted`);
            this.emit(':responseReady');
          })
          .catch(err => {
