@@ -4,6 +4,7 @@ const axios = require("axios");
 const awsSDK = require('aws-sdk');
 awsSDK.config.update({region: 'eu-west-1'});
 const {promisify} = require('es6-promisify');
+const formatGS = require('./GSformat');
 
 const appId = 'amzn1.ask.skill.d4e0cdd4-fbf4-4b3d-abe0-dc75a390d128';
 const favoriteLessonsTable = 'favoriteLessons';

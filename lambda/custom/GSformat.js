@@ -1,5 +1,9 @@
 module.exports ={
-  formatSheet: jsonSheet => {
+  formatSheet: data => {
+
+     let sheetArr = []
+     for(let key in data.feed.entry)
+
     return;
   }
 }
