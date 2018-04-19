@@ -1,9 +1,13 @@
 module.exports ={
   formatSheet: data => {
 
-     let sheetArr = []
-     for(let key in data.feed.entry)
+    const sheetArr = data.map(lesson =>{
+      return {
+        "title": lesson.title.$t,
+        "lesson": lesson.content.$t
+      }
+    })
 
-    return;
+    return sheetArr;
   }
 }

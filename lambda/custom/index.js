@@ -4,7 +4,7 @@ const axios = require("axios");
 const awsSDK = require('aws-sdk');
 awsSDK.config.update({region: 'eu-west-1'});
 const {promisify} = require('es6-promisify');
-const formatGS = require('./GSformat');
+const {formatSheet} = require('./GSformat');
 
 const appId = 'amzn1.ask.skill.d4e0cdd4-fbf4-4b3d-abe0-dc75a390d128';
 const favoriteLessonsTable = 'favoriteLessons';
@@ -37,6 +37,11 @@ const handlers = {
     'GetNewLessonIntent': function () {
       axios.get(`https://spreadsheets.google.com/feeds/list/1eDComL5qWGUo_aC07-T-rIAzS-mPZ3ctxBkEJwbGZS0/od6/public/basic?alt=json`)
       .then(response => {
+
+        const responseArray = formatSheet(response.data.feed.entry);
+
+        //look to check user's last story; increment after listening
+
         console.log(response.data.feed.entry[1].title.$t);
 
         todaysLessonTitle = response.data.feed.entry[1].title.$t;
