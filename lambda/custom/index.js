@@ -30,24 +30,63 @@ exports.handler = function(event, context) {
 
 const handlers = {
 
+    'NewSession': function() {
+
+      const today = new Date();
+
+      if(this.attributes['timestamp']){ //user has used the app before
+        const previousDate = new Date(this.attributes['timestamp']);
+        const launchCount = this.attributes['launchCount'];
+
+        if(today.toDateString() !== previousDate.toDateString()){
+          this.attributes['launchCount'] = parseInt(launchCount) + 1;
+        }
+      }
+      else{
+        this.attributes['launchCount'] = 0;
+      }
+
+      this.attributes['timestamp'] = today;
+
+      this.emit('GetNewLessonIntent');
+
+    },
+
+
     'LaunchRequest': function () {
       //this.response.speak(welcomeOutput).listen(welcomeReprompt);
       this.emit('GetNewLessonIntent');
     },
     'GetNewLessonIntent': function () {
+
+      const count = this.attributes['launchCount'];
+
+      let introSay = '';
+
+      if(count == 0){
+        introSay = "Welcome to wisdom, where each day you will be provided with a few wonds to ponder. To listen to a lesson again after it has +\
+        finished you can simply ask for it to be repeated. You can also save a lesson to your favorites, list your favorited lessons and of course +\
+        lessons from favorites. Today\'s lesson is called";
+      }
+      else{
+        introSay = 'Today\'s lesson is called';
+      }
+
       axios.get(`https://spreadsheets.google.com/feeds/list/1eDComL5qWGUo_aC07-T-rIAzS-mPZ3ctxBkEJwbGZS0/od6/public/basic?alt=json`)
       .then(response => {
 
         const responseArray = formatSheet(response.data.feed.entry);
 
         //look to check user's last story; increment after listening
+        //set position
+        //if days are not the same, then play then next lesson else repeat
 
         console.log(response.data.feed.entry[1].title.$t);
 
         todaysLessonTitle = response.data.feed.entry[1].title.$t;
         todaysLessonContent = response.data.feed.entry[1].content.$t;
 
-        this.response.speak(`Today\'s lesson is called <p>${todaysLessonTitle}</p><p>${todaysLessonContent}</p>`).shouldEndSession(false);
+        this.response.speak(`${introSay} <p>${todaysLessonTitle}</p><p>${todaysLessonContent}</p>`).shouldEndSession(false);
         this.emit(':responseReady');
 
       })
