@@ -1,7 +1,7 @@
 {
     "interactionModel":{
         "languageModel":{
-            "invocationName":"airport info",
+            "invocationName":"wisdom",
             "intents":[
                 {
                   "name": "AMAZON.CancelIntent",

@@ -61,12 +61,13 @@ const handlers = {
 
       const count = this.attributes['launchCount'];
 
+
       let introSay = '';
 
-      if(count == 0){
-        introSay = "Welcome to wisdom, where each day you will be provided with a few wonds to ponder. To listen to a lesson again after it has +\
-        finished you can simply ask for it to be repeated. You can also save a lesson to your favorites, list your favorited lessons and of course +\
-        lessons from favorites. Today\'s lesson is called";
+      if(count == 0 && this.attributes['timestamp'] == new Date()){
+        introSay = "Welcome to wisdom, where each day you will be provided with a few wonds to ponder. To listen to a "
+        "lesson again after it has finished you can simply ask for it to be repeated. You can also save a lesson to your "
+        + "favorites, list your favorited lessons and of course lessons from favorites. Today\'s lesson is called";
       }
       else{
         introSay = 'Today\'s lesson is called';
@@ -77,14 +78,10 @@ const handlers = {
 
         const responseArray = formatSheet(response.data.feed.entry);
 
-        //look to check user's last story; increment after listening
-        //set position
-        //if days are not the same, then play then next lesson else repeat
+        console.log(responseArray[count]);
 
-        console.log(response.data.feed.entry[1].title.$t);
-
-        todaysLessonTitle = response.data.feed.entry[1].title.$t;
-        todaysLessonContent = response.data.feed.entry[1].content.$t;
+        todaysLessonTitle = responseArray[count].title;
+        todaysLessonContent = responseArray[count].lesson;
 
         this.response.speak(`${introSay} <p>${todaysLessonTitle}</p><p>${todaysLessonContent}</p>`).shouldEndSession(false);
         this.emit(':responseReady');

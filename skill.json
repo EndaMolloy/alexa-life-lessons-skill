@@ -3,14 +3,14 @@
     "publishingInformation": {
       "locales": {
         "en-US": {
-          "summary": "Airport info tester",
+          "summary": "words of wisom",
           "examplePhrases": [
-            "Alexa open airport info",
-            "Alexa get flight statuses at AAC",
-            "Alexa what is the status at AAC"
+            "Alexa open wisdom",
+            "Alexa ask wisdom for today's lesson",
+            "Alexa what is the today's wisdom lesson"
           ],
-          "name": "airport",
-          "description": "Sample Full Description"
+          "name": "wisdom",
+          "description": "A skill that provides you with daily words of wisdom to ponder over"
         }
       },
       "isAvailableWorldwide": true,
