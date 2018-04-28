@@ -3,7 +3,6 @@ const Alexa = require("alexa-sdk");
 const axios = require("axios");
 const awsSDK = require('aws-sdk');
 awsSDK.config.update({region: 'eu-west-1'});
-const {promisify} = require('es6-promisify');
 const {formatSheet} = require('./GSformat');
 
 const appId = 'amzn1.ask.skill.d4e0cdd4-fbf4-4b3d-abe0-dc75a390d128';
@@ -11,11 +10,8 @@ const favoriteLessonsTable = 'favoriteLessons';
 const docClient = new awsSDK.DynamoDB.DocumentClient();
 
 
-// For detailed tutorial on how to making a Alexa skill,
-// please visit us at http://alexa.design/build
-
 const SKILL_NAME = 'Life Lessons';
-const HELP_MESSAGE = 'You can say give me a life lesson, or, you can say exit... What can I help you with?';
+const HELP_MESSAGE = 'You can say give me a life lesson, ask me for my favorites or, you can say exit... What can I help you with?';
 const HELP_REPROMPT = 'What can I help you with?';
 const STOP_MESSAGE = 'Goodbye!';
 var todaysLessonTitle = '';
@@ -65,9 +61,9 @@ const handlers = {
       let introSay = '';
 
       if(count == 0 && this.attributes['timestamp'] == new Date()){
-        introSay = "Welcome to wisdom, where each day you will be provided with a few wonds to ponder. To listen to a "
-        "lesson again after it has finished you can simply ask for it to be repeated. You can also save a lesson to your "
-        + "favorites, list your favorited lessons and of course lessons from favorites. Today\'s lesson is called";
+        introSay = "Welcome to life lessons, where each day you will be provided with a short lesson to help you reflect on " +
+        "situations which will arise throughout your life. To listen to a lesson again after it has finished you can simply " +
+        "ask for it to be repeated. You can also save a lesson to your " + "favorites, list your favorited lessons and of course lessons from favorites. Today\'s lesson is called";
       }
       else{
         introSay = 'Today\'s lesson is called';
@@ -77,8 +73,6 @@ const handlers = {
       .then(response => {
 
         const responseArray = formatSheet(response.data.feed.entry);
-
-        console.log(responseArray[count]);
 
         todaysLessonTitle = responseArray[count].title;
         todaysLessonContent = responseArray[count].lesson;

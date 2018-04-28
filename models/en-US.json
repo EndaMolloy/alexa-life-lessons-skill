@@ -1,7 +1,7 @@
 {
     "interactionModel":{
         "languageModel":{
-            "invocationName":"wisdom",
+            "invocationName":"life lessons",
             "intents":[
                 {
                   "name": "AMAZON.CancelIntent",

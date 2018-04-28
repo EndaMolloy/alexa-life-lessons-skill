@@ -1,7 +1,7 @@
 {
   "name": "life-lessons",
   "version": "1.0.0",
-  "description": "Airport info skill",
+  "description": "A selection of lessons taken from history with accompaning interpretations",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -3,14 +3,14 @@
     "publishingInformation": {
       "locales": {
         "en-US": {
-          "summary": "words of wisom",
+          "summary": "lessons for life",
           "examplePhrases": [
-            "Alexa open wisdom",
-            "Alexa ask wisdom for today's lesson",
-            "Alexa what is the today's wisdom lesson"
+            "Alexa open life lessons",
+            "Alexa ask life lessons for today's insights",
+            "Alexa what is the today's life lesson"
           ],
-          "name": "wisdom",
-          "description": "A skill that provides you with daily words of wisdom to ponder over"
+          "name": "life lessons",
+          "description": "A skill that provides you with a daily lesson for life"
         }
       },
       "isAvailableWorldwide": true,
