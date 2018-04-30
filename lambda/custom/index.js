@@ -16,10 +16,12 @@ const HELP_REPROMPT = 'What can I help you with?';
 const STOP_MESSAGE = 'Goodbye!';
 var todaysLessonTitle = '';
 var todaysLessonContent = '';
+var todaysLessonInterpretation = '';
 
 exports.handler = function(event, context) {
     var alexa = Alexa.handler(event, context);
     alexa.appId = appId;
+    alexa.dynamoDBTableName = 'lessonsSession';
     alexa.registerHandlers(handlers);
     alexa.execute();
 };
@@ -28,14 +30,16 @@ const handlers = {
 
     'NewSession': function() {
 
-      const today = new Date();
+      const today = new Date().setHours(0,0,0,0);
 
       if(this.attributes['timestamp']){ //user has used the app before
-        const previousDate = new Date(this.attributes['timestamp']);
+        const previousDate = this.attributes['timestamp'];
         const launchCount = this.attributes['launchCount'];
 
-        if(today.toDateString() !== previousDate.toDateString()){
+        if(today !== previousDate){
           this.attributes['launchCount'] = parseInt(launchCount) + 1;
+          console.log('previousDate: ',previousDate);
+          console.log('launchcount: ',launchCount);
         }
       }
       else{
@@ -60,10 +64,10 @@ const handlers = {
 
       let introSay = '';
 
-      if(count == 0 && this.attributes['timestamp'] == new Date()){
+      if(count == 0){
         introSay = "Welcome to life lessons, where each day you will be provided with a short lesson to help you reflect on " +
         "situations which will arise throughout your life. To listen to a lesson again after it has finished you can simply " +
-        "ask for it to be repeated. You can also save a lesson to your " + "favorites, list your favorited lessons and of course lessons from favorites. Today\'s lesson is called";
+        "ask for it to be repeated. You can also save a lesson to your " + "favorites. <break time='1s'/> Today\'s lesson is called";
       }
       else{
         introSay = 'Today\'s lesson is called';
@@ -73,11 +77,13 @@ const handlers = {
       .then(response => {
 
         const responseArray = formatSheet(response.data.feed.entry);
+        const interpretation = 'Interpretation';
 
         todaysLessonTitle = responseArray[count].title;
         todaysLessonContent = responseArray[count].lesson;
+        todaysLessonInterpretation = responseArray[count].interpret;
 
-        this.response.speak(`${introSay} <p>${todaysLessonTitle}</p><p>${todaysLessonContent}</p>`).shouldEndSession(false);
+        this.response.speak(`${introSay}<p>${todaysLessonTitle}</p><p>${todaysLessonContent}</p><break time='1s'/><p>${interpretation}</p><p>${todaysLessonInterpretation}</p>`).shouldEndSession(false);
         this.emit(':responseReady');
 
       })
@@ -224,6 +230,7 @@ const handlers = {
     },
     'SessionEndedRequest' : function() {
         console.log('Session ended with reason: ' + this.event.request.reason);
+        this.emit(':saveState', true);
     },
     'AMAZON.StopIntent' : function() {
         this.response.speak('Bye bye');
