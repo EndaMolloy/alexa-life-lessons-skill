@@ -83,7 +83,7 @@ const handlers = {
         todaysLessonContent = responseArray[count].lesson;
         todaysLessonInterpretation = responseArray[count].interpret;
 
-        this.response.speak(`${introSay}<p>${todaysLessonTitle}</p><p>${todaysLessonContent}</p><break time='1s'/><p>${interpretation}</p><p>${todaysLessonInterpretation}</p>`).shouldEndSession(false);
+        this.response.speak(`${introSay}<p>${todaysLessonTitle}</p><break time='0.5s'/><p>${todaysLessonContent}</p><break time='1s'/><p>${interpretation}</p><p>${todaysLessonInterpretation}</p>`).shouldEndSession(false);
         this.emit(':responseReady');
 
       })
