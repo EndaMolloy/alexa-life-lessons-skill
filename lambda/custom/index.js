@@ -32,14 +32,12 @@ const handlers = {
 
       const today = new Date().setHours(0,0,0,0);
 
-      if(this.attributes['timestamp']){ //user has used the app before
+      if(this.attributes['timestamp']){ // user has used the app before
         const previousDate = this.attributes['timestamp'];
         const launchCount = this.attributes['launchCount'];
 
         if(today !== previousDate){
-          this.attributes['launchCount'] = parseInt(launchCount) + 1;
-          console.log('previousDate: ',previousDate);
-          console.log('launchcount: ',launchCount);
+          this.attributes['launchCount'] = launchCount + 1;
         }
       }
       else{
@@ -47,26 +45,20 @@ const handlers = {
       }
 
       this.attributes['timestamp'] = today;
-
       this.emit('GetNewLessonIntent');
-
     },
 
 
     'LaunchRequest': function () {
-      //this.response.speak(welcomeOutput).listen(welcomeReprompt);
       this.emit('GetNewLessonIntent');
     },
     'GetNewLessonIntent': function () {
-
       const count = this.attributes['launchCount'];
-
-
       let introSay = '';
 
       if(count == 0){
         introSay = "Welcome to life lessons, where each day you will be provided with a short lesson to help you reflect on " +
-        "situations which will arise throughout your life. To listen to a lesson again after it has finished you can simply " +
+        "situations which will likely arise throughout your life. To listen to a lesson again after it has finished you can simply " +
         "ask for it to be repeated. You can also save a lesson to your " + "favorites. <break time='1s'/> Today\'s lesson is called";
       }
       else{
@@ -83,7 +75,7 @@ const handlers = {
         todaysLessonContent = responseArray[count].lesson;
         todaysLessonInterpretation = responseArray[count].interpret;
 
-        this.response.speak(`${introSay}<p>${todaysLessonTitle}</p><break time='0.5s'/><p>${todaysLessonContent}</p><break time='1s'/><p>${interpretation}</p><p>${todaysLessonInterpretation}</p>`).shouldEndSession(false);
+        this.response.speak(`${introSay}<p>${todaysLessonTitle}</p><break time='0.5s'/><p>${todaysLessonContent}</p><break time='1s'/><p>${interpretation}</p><p>${todaysLessonInterpretation}</p>`).shouldEndSession(true);
         this.emit(':responseReady');
 
       })
