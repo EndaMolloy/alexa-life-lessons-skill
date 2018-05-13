@@ -29,7 +29,7 @@ const handlers = {
 
     'NewSession': function() {
 
-      const today = new Date();
+      const today = new Date().setHours(0,0,0,0);
 
       if(this.attributes['timestamp']){ // user has used the app before
         const previousDate = this.attributes['timestamp'];
@@ -82,7 +82,7 @@ const handlers = {
         todaysLessonContent = responseArray[count].lesson;
         todaysLessonInterpretation = responseArray[count].interpret;
 
-        this.response.speak(`${introSay}<p>${todaysLessonTitle}</p><break time='0.5s'/><p>${todaysLessonContent}</p><break time='1s'/><p>${interpretation}</p><p>${todaysLessonInterpretation}</p>`).shouldEndSession(true);
+        this.response.speak(`${introSay}<p>${todaysLessonTitle}</p><break time='0.5s'/><p>${todaysLessonContent}</p><break time='1s'/><p>${interpretation}</p><p>${todaysLessonInterpretation}</p>`);
         this.emit(':responseReady');
 
       })
