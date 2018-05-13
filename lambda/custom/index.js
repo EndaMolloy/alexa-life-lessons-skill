@@ -4,22 +4,21 @@ const axios = require("axios");
 const awsSDK = require('aws-sdk');
 awsSDK.config.update({region: 'eu-west-1'});
 const {formatSheet} = require('./GSformat');
+require('dotenv').config()
 
 const appId = 'amzn1.ask.skill.d4e0cdd4-fbf4-4b3d-abe0-dc75a390d128';
 const favoriteLessonsTable = 'favoriteLessons';
 const docClient = new awsSDK.DynamoDB.DocumentClient();
-
-
 const SKILL_NAME = 'Life Lessons';
 const HELP_MESSAGE = 'You can say give me a life lesson, ask me for my favorites or, you can say exit... What can I help you with?';
 const HELP_REPROMPT = 'What can I help you with?';
 const STOP_MESSAGE = 'Goodbye!';
-var todaysLessonTitle = '';
-var todaysLessonContent = '';
-var todaysLessonInterpretation = '';
+let todaysLessonTitle = '';
+let todaysLessonContent = '';
+let todaysLessonInterpretation = '';
 
 exports.handler = function(event, context) {
-    var alexa = Alexa.handler(event, context);
+    const alexa = Alexa.handler(event, context);
     alexa.appId = appId;
     alexa.dynamoDBTableName = 'lessonsSession';
     alexa.registerHandlers(handlers);
@@ -30,11 +29,12 @@ const handlers = {
 
     'NewSession': function() {
 
-      const today = new Date().setHours(0,0,0,0);
+      const today = new Date();
 
       if(this.attributes['timestamp']){ // user has used the app before
         const previousDate = this.attributes['timestamp'];
         const launchCount = this.attributes['launchCount'];
+        this.attributes['firstTimeUser'] = false;
 
         if(today !== previousDate){
           this.attributes['launchCount'] = launchCount + 1;
@@ -42,6 +42,7 @@ const handlers = {
       }
       else{
         this.attributes['launchCount'] = 0;
+        this.attributes['firstTimeUser'] = true;
       }
 
       this.attributes['timestamp'] = today;
@@ -53,10 +54,10 @@ const handlers = {
       this.emit('GetNewLessonIntent');
     },
     'GetNewLessonIntent': function () {
-      const count = this.attributes['launchCount'];
+      const firstTimeUser = this.attributes['firstTimeUser'];
       let introSay = '';
 
-      if(count == 0){
+      if(firstTimeUser){
         introSay = "Welcome to life lessons, where each day you will be provided with a short lesson to help you reflect on " +
         "situations which will likely arise throughout your life. To listen to a lesson again after it has finished you can simply " +
         "ask for it to be repeated. You can also save a lesson to your " + "favorites. <break time='1s'/> Today\'s lesson is called";
@@ -65,11 +66,17 @@ const handlers = {
         introSay = 'Today\'s lesson is called';
       }
 
-      axios.get(`https://spreadsheets.google.com/feeds/list/1eDComL5qWGUo_aC07-T-rIAzS-mPZ3ctxBkEJwbGZS0/od6/public/basic?alt=json`)
+      axios.get(process.env.GOOGLESHEET_PATH)
       .then(response => {
 
         const responseArray = formatSheet(response.data.feed.entry);
         const interpretation = 'Interpretation';
+        let count = this.attributes['launchCount'];
+
+        if(count > responseArray.length - 1){
+          count = 0;
+          this.attributes['launchCount'] = 0;
+        }
 
         todaysLessonTitle = responseArray[count].title;
         todaysLessonContent = responseArray[count].lesson;
@@ -129,7 +136,7 @@ const handlers = {
     },
 
     'RepeatLessonIntent': function(){
-      this.response.speak(`<p>${todaysLessonTitle}</p><p>${todaysLessonContent}</p>`);
+      this.response.speak(`${introSay}<p>${todaysLessonTitle}</p><break time='0.5s'/><p>${todaysLessonContent}</p><break time='1s'/><p>${interpretation}</p><p>${todaysLessonInterpretation}</p>`);
       this.emit(':responseReady');
     },
 

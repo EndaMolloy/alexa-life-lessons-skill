@@ -1,7 +1,7 @@
 {
   "name": "life-lessons",
   "version": "1.0.0",
-  "description": "A selection of lessons taken from history with accompaning interpretations",
+  "description": "A selection of lessons told through timeless fables and stories",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -9,6 +9,7 @@
     "alexa-sdk": "^1.0.0",
     "aws-sdk": "^2.218.1",
     "axios": "^0.18.0",
+    "dotenv": "^5.0.1",
     "es6-promisify": "^6.0.0"
   }
 }
